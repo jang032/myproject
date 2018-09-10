@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bit.app">
+<!-- 	<select id= "selectLineGraph" parameterType = "com.bit.app.vo.LineGraphsVO" resultType="com.bit.app.vo.LineGraphsVO"> -->
+<!--        select * from BIRTHRATE where city = #{city} and district = #{district} -->
+<!--    </select> -->
+
+<!-- 	<select id= "selectService" parameterType = "com.bit.app.vo.ServiceVO" resultType="com.bit.app.vo.ServiceVO"> -->
+<!--        select * from CHILD_RESULT where city = #{city} and district = #{district} -->
+<!--    </select> -->
+   
+<!-- 	<select id="PolyGonList" parameterType="java.util.HashMap" resultType="com.bit.app.vo.PolyGonVO"> -->
+<!-- 		select DISTINCT district from COORDINATE_DATA where city = #{city} and district like '%'||#{district}||'%'     -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectPolygon" parameterType="java.util.HashMap" resultType="com.bit.app.vo.PolyGonVO"> -->
+<!-- 		select district,lat, lon from COORDINATE_DATA where district = #{district} -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectAll" parameterType="java.util.HashMap" resultType="com.bit.app.vo.HomeVO"> -->
+<!-- 		select * from all_data_sum where city = #{city} and district = #{district}  -->
+<!-- 	</select> -->
+	<select id="selectGp" parameterType="String" resultType="com.bit.app.vo.GraphsVO">
+	SELECT * FROM GRAPHS WHERE city = #{city}
+	</select>
+	
+	<select id="selectWC" parameterType="String" resultType="com.bit.app.vo.WordCloudVO">
+	SELECT * FROM WORD WHERE city = #{city}
+	</select>
+	<select id ="childSelect3" resultType="com.bit.app.vo.ChildVO">
+	select localnum, city, district, four_p from total_test_data where city = #{city} and tax_p is not null
+	</select>
+	
+	<select id ="childSelect2" resultType="com.bit.app.vo.ChildVO">
+	select localnum, city, district, tax_p from total_test_data where city = #{city} and tax_p is not null
+	</select>
+	
+	<select id ="childSelect" resultType="com.bit.app.vo.ChildVO">
+	select * from onlychildfull where city = #{city}
+	</select>
+	<select id ="childSelectAll3" resultType="com.bit.app.vo.ChildVO">
+	select localnum, city, district, four_p from total_test_data where tax_p is not null
+	</select>
+	<select id ="childSelectAll2" resultType="com.bit.app.vo.ChildVO">
+	select localnum, city, district, tax_p from total_test_data where tax_p is not null
+	</select>
+	
+	<select id ="childSelectAll" resultType="com.bit.app.vo.ChildVO">
+	select * from onlychildfull
+	</select> 
+	<select id="TwoCitySelect"  resultType="com.bit.app.vo.HomeVO">
+	select distinct city from all_data_sum
+	</select>
+	
+	<select id="SearchTable" parameterType="java.util.HashMap" resultType="com.bit.app.vo.TableVO">
+	<include refid = "paging3"></include>
+	select childcare_name,city,district,service_type,a_limit,a_status,(
+	select count(*) from all_data_sum  where city =  #{city} and district = #{district}) as recount ,lat
+	from all_data_sum where city = #{city} and district = #{district} order by ${value}
+	<choose>
+		<when test="range eq 'asc'">ASC</when>
+		<otherwise>DESC</otherwise>
+	</choose>
+	<include refid = "paging4"></include>
+	</select>
+	
+	
+	<select id="SearchCount" parameterType="java.util.HashMap" resultType="int">
+	select count(*) from all_data_sum where city = #{city} and district = #{district}
+	</select>
+
+	<sql id ="paging3">
+	select * from( 
+	select ROWNUM AS rn, A.* from (
+	</sql>
+	<sql id ="paging4">
+		) A ) 
+	where rn BETWEEN #{start} AND #{end}
+	</sql>
+	
+</mapper>
